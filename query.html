@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			Query Parser
+		</title>
+	</head>
+
+	<body>
+        Hello world
+	</body>
+    <script>
+         // whole query
+         console.log("The whole query string is: " + location.search);
+
+        //value seperated with "&"
+        const params = new URLSearchParams(document.location.search);
+        params.forEach((value, key) => {
+            console.log("Seperated with '&' : " + value, key)
+        })
+
+        //value seperated with "/"
+        const search = location.search.substring(1)
+        const tags = search.split("/")
+        for (const i in tags){
+            if (i !=0){
+                alert(tags[i])
+            }
+            
+        }
+        
+    </script>
+</html>
+
