@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<title>
-			Query Parser
-		</title>
-	</head>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>Query Parser</title>
+  </head>
 
-	<body>
-        Hello world
-	</body>
-    <script>
-         // whole query
-         console.log("The whole query string is: " + location.search);
+  <body>
+    Hello world
+  </body>
+  <script>
+            // whole query
+             console.log("The whole query string is: " + location.search);
 
-        //value seperated with "&"
-        const params = new URLSearchParams(document.location.search);
-        params.forEach((value, key) => {
-            console.log("Seperated with '&' : " + value, key)
-        })
+            //value seperated with "&"
+            const params = new URLSearchParams(document.location.search);
+            params.forEach((value, key) => {
+                console.log("Seperated with '&' : " + value, key)
+            })
 
-        //value seperated with "/"
-        const search = location.search.substring(1)
-        const tags = search.split("/")
-        for (const i in tags){
-            if (i !=0){
-                alert(tags[i])
+            //value seperated with "/"
+            const search = location.search.substring(1)
+            const tags = search.split("/")
+            for (const i in tags){
+                // if (i !=0){
+                    console.log(tags[i])
+                    onLoad(tags[i])
+                // }
+
             }
-            
-        }
-        
-    </script>
-</html>
 
+            //logging onload event
+            function onLoad(message) {
+                const Url='https://344q5pja9j.execute-api.us-east-1.amazonaws.com/Prod/hello';
+                const data=message;
+                console.log("Page is loaded");
+                $.ajax({
+                        type: "POST",
+                        url: Url,
+                        data: data,
+                        dataType: 'text'
+                        });
+            }
+  </script>
+</html>
