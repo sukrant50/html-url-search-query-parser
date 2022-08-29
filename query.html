@@ -1,46 +1,128 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <title>Query Parser</title>
-  </head>
 
-  <body>
-    Hello world
-  </body>
-  <script>
-            // whole query
-             console.log("The whole query string is: " + location.search);
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <title>Query Parser</title>
+</head>
 
-            //value seperated with "&"
-            const params = new URLSearchParams(document.location.search);
-            params.forEach((value, key) => {
-                console.log("Seperated with '&' : " + value, key)
-            })
+<body>
+  Hello World
+  <br>
+  <a href="#" onclick=linkClicked()>Click me!</a>
+  <br>
+  <div id="player"></div>
+  <br>
+  <button id="button" onclick=buttonClicked()>Button</button>
+</body>
 
-            //value seperated with "/"
-            const search = location.search.substring(1)
-            const tags = search.split("/")
-            for (const i in tags){
-                // if (i !=0){
-                    console.log(tags[i])
-                    onLoad(tags[i])
-                // }
+<script>
+  // whole query string
+  console.log("The whole query string is: " + location.search);
 
-            }
+  //search query after "?" and checks if value exists
+  const search = location.search.substring(1)
+  var message = "";
+  var tempMessage = "";
+  if (search != null) {
+    //slip values by "/"
+    const tags = search.split("/")
+    const keys = ["Firstname:", "Lastname:", "Email:", "SlackID"]
+    for (tag in tags) {
+      if (keys[tag] == "SlackID") {
+        message = message + " " + keys[tag] + " " + "<@" + tags[tag] + ">"
+      }
+      else {
+        message = message + " " + keys[tag] + " " + tags[tag]
+      }
+      // postReq(message);
+    }
+  }
 
-            //logging onload event
-            function onLoad(message) {
-                const Url='https://344q5pja9j.execute-api.us-east-1.amazonaws.com/Prod/hello';
-                const data=message;
-                console.log("Page is loaded");
-                $.ajax({
-                        type: "POST",
-                        url: Url,
-                        data: data,
-                        dataType: 'text'
-                        });
-            }
-  </script>
+  //when the page Loads
+  onPageLoad();
+
+  //loads the IFrame Player API code asynchronously
+  var tag = document.createElement('script');
+
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // creates an <iframe> (and YouTube player)
+  //    after the API code downloads.
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '390',
+      width: '640',
+      videoId: 'OQ7iffgLFvA',
+      playerVars: {
+        'playsinline': 1
+      },
+      events: {
+        // 'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+
+  // // The API will call this function when the video player is ready.
+  // function onPlayerReady(event) {
+  //   event.target.playVideo();
+  // }
+
+
+//sending the user data with the action event performed
+function postReq(sendData) {
+    const Url = 'https://344q5pja9j.execute-api.us-east-1.amazonaws.com/Prod/hello';
+    const data = sendData;
+    console.log("the value being sent:", data);
+    $.ajax({
+      type: "POST",
+      url: Url,
+      data: data,
+      dataType: 'text'
+    });
+  }
+
+  //function to track interaction with the video
+  function onPlayerStateChange(event) {
+    console.log(event);
+    if (event.data == YT.PlayerState.ENDED) {
+      tempMessage = message + " Action: Video Watched";
+      console.log("Video Watched")
+      postReq(tempMessage);
+    }
+    if (event.data == YT.PlayerState.PLAYING) {
+      tempMessage = message + " Action: Video Started";
+      console.log("Video Watched")
+      postReq(tempMessage);
+    }
+    if (event.data == YT.PlayerState.PAUSED) {
+      tempMessage = message + " Action: Video Paused";
+      console.log("Video Watched")
+      postReq(tempMessage);
+    }
+  }
+
+  function linkClicked() {
+    tempMessage = message + " Action: Link Clicked";
+    console.log("Link Clicked");
+    postReq(tempMessage);
+  }
+  function buttonClicked() {
+    tempMessage = message + " Action: Button Clicked";
+    console.log("Button Clicked");
+    postReq(tempMessage);
+  }
+
+  function onPageLoad() {
+    tempMessage = message + " Action: Page Loaded";
+    console.log("Page is loaded");
+    postReq(tempMessage);
+  }
+</script>
+
 </html>
